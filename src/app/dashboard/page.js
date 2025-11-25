@@ -1,126 +1,164 @@
 "use client"
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Apifetch } from "@/components/items/apifetch";
-import Menu from "@/components/items/menubarlayout";
+import { useRef, useState } from "react"
+export default function Dashboard() {
+  const [prompt, setPrompt] = useState("")
+  const [defPrompt, setDefPrompt] = useState('How can I assist you today?')
+  const [response, setResponse] = useState(null)
+  const [isStreaming, setIsStreaming] = useState(false)
+  const [isListening, setIsListening] = useState(false)
 
+  const recognitionRef = useRef(null)
+  if (typeof window !== "undefined" && !recognitionRef.current) {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition
+    const recognition = new SpeechRecognition()
+    recognition.continuous = true
+    recognition.interimResults = true
+    recognition.lang = "en-US"
 
-
-export default function Dashboard({ error }) {
-  const [posts, setPosts] = useState([]);
-  const [search, setSearch] = useState('');
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 20;
-
-  const router = useRouter()
-  useEffect(() => {
-    if (!localStorage.getItem("jwtToken")) {
-      router.push("/login")
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map((result) => result[0].transcript)
+        .join(" ")
+      setPrompt(transcript)
     }
-  }, [router])
 
-  const handlelogout = () => {
-    localStorage.removeItem("jwtToken")
-    router.push("/login")
+    recognition.onend = () => {
+      if (isListening) recognition.start()
+    }
+
+    recognitionRef.current = recognition
   }
-  useEffect(() => {
-    async function getPosts() {
-      try {
-        const data = await Apifetch();
-        setPosts(data);
-        setFilteredPosts(data);
-      } catch (err) {
-        setError('Failed to fetch data');
-      }
+
+  const toggleMic = () => {
+    if (!recognitionRef.current) return
+
+    if (!isListening) {
+      recognitionRef.current.start()
+      console.log("🎤 Voice Recognition Started")
+    } else {
+      recognitionRef.current.stop()
+      console.log("🛑 Voice Recognition Stopped")
     }
-    getPosts();
-  }, []);
-  useEffect(() => {
-    const filtered = posts.filter(post =>
-      post.title.toLowerCase().includes(search.toLowerCase()) || post.id.toString().includes(search)
-    );
-    setFilteredPosts(filtered);
-    setCurrentPage(1);
-  }, [search, posts]);
+    setIsListening(!isListening)
+  }
 
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = (filteredPosts ?? []).slice(indexOfFirstPost, indexOfLastPost);
-  const totalPages = Math.ceil((filteredPosts ?? []).length / postsPerPage);
-  if (error) return <div className="text-red-500">{error}</div>;
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    try {
+      setDefPrompt('Thinking....')
+      setResponse(null)
+      setIsStreaming(true)
+
+      const res = await fetch("http://192.168.1.14:8000/prompt/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      })
+
+      const data = await res.json()
+      setResponse(JSON.parse(data))
+      console.log(response)
+      setPrompt('')
+      setIsStreaming(false)
+
+    } catch (error) {
+      console.log("Error:", error)
+      setIsStreaming(false)
+    }
+  }
+
   return (
-    <div>
-      <div className="flex flex-row bg-blue-700 items-center justify-between  h-16 space-y-4">
-        <div className="flex flex-row items-center justify-center m-1 w-48 h-9">
-          <h1
-            className="text-white text-3xl font-extrabold">Dashboard</h1>
-        </div>
-        <Menu className=" flex items-center justify-center mt-2 h-10" />
-        <div className="flex flex-row items-center justify-center w-32 h-9">
-          <Button
-            onClick={handlelogout}
-            className="w-20 h-7 bg-primary flex text-primary-foreground shadow-xs hover:bg-primary/90"
-          >Sign Out
-          </Button>
-        </div>
+    <div className="w-full h-screen flex flex-col items-center justify-around p-4">
+
+      <div className="w-3/5 h-3/5  p-6 rounded-2xl overflow-auto ">
+        {response  ? (
+          <>
+            <div className="">
+              <b>Japanese:</b> {response?.Japanese_Output} ({response?.Japanese_Pronunciation})
+              <br />
+              <b>English:</b> {response?.English_Output}
+            </div>
+
+            <div>
+              <b>Alternative Words:</b> {response?.Alternative_Expressions}
+            </div>
+
+            <div>
+              <b>Grammar Notes:</b> {response?.Grammar_Notes}
+              <div>
+                <b>Breakdown:</b>{response?.Breakdown}
+              </div>
+            </div>
+
+            <div>
+              <b>Examples:</b>
+              <br />• English: {response?.Examples?.English}
+              <br />• Japanese: {response?.Examples?.Japanese}
+              <br />• Pronunciation: {response?.Examples?.Japanese_Pronunciation}
+            </div>
+          </>
+        ) : (
+          <div className="h-full flex flex-col justify-center items-center">
+            <div className="font-bold text-4xl m-2">Hello, <span className="text-primary">Man</span></div>
+            <div className=" text-5xl">{defPrompt}</div>
+          </div>
+        )}
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-5">
-        {/* Search */}
-        <input
-          type="text"
-          placeholder="Search by title or ID..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="border p-2 w-full mb-4"
-        />
+      <div className="w-3/5 bg-white border rounded-2xl shadow-xl shadow-gray-200 h-1/6 mb-4">
+        <form onSubmit={handleSubmit} className="h-full px-4 py-3">
+          <input
+            placeholder="Ask anything..."
+            required
+            className="w-full px-4 h-1/2 bg-white border-0 outline-none overflow-scroll overflow-y-auto p-2 rounded-xl "
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+          ></input>
+          <div className="flex justify-between py-2">
+            <div>
+              <button
+                type="submit"
+                className="mx-2 p-2 w-fit border rounded-4xl text-white "
+              >
+                {(
+                  <><div className="flex px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg>    
+                    <span className="text-black font-bold px-1">Upload</span>
+                    </div>              
+                  </>
+                )}
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={toggleMic}
+                type="button"
+                style={{backgroundColor: isListening ? "red" : ""}}
+                className="mx-2 p-2 w-fit border rounded-[50%] text-white "
+              >
+                {isListening ? ( <><div >
+<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="m710-362-58-58q14-23 21-48t7-52h80q0 44-13 83.5T710-362ZM480-594Zm112 112-72-72v-206q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v126l-80-80v-46q0-50 35-85t85-35q50 0 85 35t35 85v240q0 11-2.5 20t-5.5 18ZM440-120v-123q-104-14-172-93t-68-184h80q0 83 57.5 141.5T480-320q34 0 64.5-10.5T600-360l57 57q-29 23-63.5 39T520-243v123h-80Zm352 64L56-792l56-56 736 736-56 56Z"/></svg>                  </div></>) :(
+                  <><div>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-400q-50 0-85-35t-35-85v-240q0-50 35-85t85-35q50 0 85 35t35 85v240q0 50-35 85t-85 35Zm0-240Zm-40 520v-123q-104-14-172-93t-68-184h80q0 83 58.5 141.5T480-320q83 0 141.5-58.5T680-520h80q0 105-68 184t-172 93v123h-80Zm40-360q17 0 28.5-11.5T520-520v-240q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v240q0 17 11.5 28.5T480-480Z" /></svg>                  </div>
+                  </>)}
+              </button>
+              <button
+                type="submit"
+                className="mx-2 p-2 w-fit border rounded-[50%] text-white bg-primary "
+              >
+                {isStreaming ? (<div><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M320-160h320v-120q0-66-47-113t-113-47q-66 0-113 47t-47 113v120Zm160-360q66 0 113-47t47-113v-120H320v120q0 66 47 113t113 47ZM160-80v-80h80v-120q0-61 28.5-114.5T348-480q-51-32-79.5-85.5T240-680v-120h-80v-80h640v80h-80v120q0 61-28.5 114.5T612-480q51 32 79.5 85.5T720-280v120h80v80H160Z"/></svg></div>) : (
+                  <><div >
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" /></svg>
+                  </div>
+                  </>)}
+              </button>
+            </div>
 
-        {/* Table */}
-        <div className="overflow-auto border rounded-lg">
-          <table className="w-full table-auto">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="p-2">User ID</th>
-                <th className="p-2">ID</th>
-                <th className="p-2">Title</th>
-                <th className="p-2">Body</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentPosts.map(post => (
-                <tr key={post.id} className="border-t">
-                  <td className="p-2 text-center">{post.userId}</td>
-                  <td className="p-2 text-center">{post.id}</td>
-                  <td className="p-2">{post.title}</td>
-                  <td className="p-2">{post.body}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="flex justify-between items-center mt-4">
-          <button
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <span>Page {currentPage} of {totalPages}</span>
-          <button
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
-      </div>
-    </div>
+          </div>
+        </form>
+      </div >
+    </div >
   )
 }
