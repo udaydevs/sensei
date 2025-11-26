@@ -1,16 +1,24 @@
 "use client"
-import { useRef, useState } from "react"
-import DefaultSidebar from "@/components/ui/sidebar"
-
+import { useRef, useState,useEffect } from "react"
+import remarkGfm from "remark-gfm"
+import ReactMarkdown from "react-markdown"
 
 export default function Dashboard() {
   const [prompt, setPrompt] = useState("")
   const [defPrompt, setDefPrompt] = useState('How can I assist you today?')
-  const [response, setResponse] = useState(null)
+  const [responses, setResponses] = useState([])
   const [isStreaming, setIsStreaming] = useState(false)
   const [isListening, setIsListening] = useState(false)
-
   const recognitionRef = useRef(null)
+  const messagesEndRef = useRef(null)
+
+
+  useEffect(() => {
+  if (messagesEndRef.current) {
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+  }
+}, [responses])
+
   if (typeof window !== "undefined" && !recognitionRef.current) {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition
@@ -45,72 +53,62 @@ export default function Dashboard() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!prompt.trim()) return
+
+    setDefPrompt('Thinking...')
+    setIsStreaming(true)
+    setResponses(prev => [...prev, { type: 'user', content: prompt }])
+    setPrompt('')
 
     try {
-      setDefPrompt('Thinking....')
-      setResponse(null)
-      setIsStreaming(true)
-
-      const res = await fetch("https://keven-submissive-unmystically.ngrok-free.dev/prompt/", {
+      const res = await fetch("http://localhost:8001/prompt/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
       })
-
       const data = await res.json()
-      setResponse(JSON.parse(data))
-      console.log(response)
-      setPrompt('')
-      setIsStreaming(false)
-
-    } catch (error) {
-      console.log("Error:", error)
+      console.log(data)
+      setResponses(prev => [...prev, { type: 'ai', content: data }])
+    } catch (err) {
+      console.error("Error:", err)
+      setResponses(prev => [...prev, { type: 'ai', content: { Japanese_Output: "Error", English_Output: err.message } }])
+    } finally {
       setIsStreaming(false)
     }
   }
 
+
   return (
-    <div className="w-full h-screen justify-around flex  p-4">
-      <div className="w-1/5">
-        <DefaultSidebar />
-      </div>
-      <div className="w-full flex flex-col items-center h-full  ">
-        <div className=" h-4/5 flex flex-col p-6 items-center rounded-2xl overflow-auto ">
-          {response ? (
-            <>
-              <div className="w-full">
-                <b>Japanese:</b> {response?.Japanese_Output} ({response?.Japanese_Pronunciation})
-                <br />
-                <b>English:</b> {response?.English_Output}
-              </div>
+    <div className="w-full h-[99%] flex p-4">
 
-              <div>
-                <b>Alternative Words:</b> {response?.Alternative_Expressions}
-              </div>
-
-              <div>
-                <b>Grammar Notes:</b> {response?.Grammar_Notes}
-                <div>
-                  <b>Breakdown:</b>{response?.Breakdown}
-                </div>
-              </div>
-
-              <div>
-                <b>Examples:</b>
-                <br />• English: {response?.Examples?.English}
-                <br />• Japanese: {response?.Examples?.Japanese}
-                <br />• Pronunciation: {response?.Examples?.Japanese_Pronunciation}
-              </div>
-            </>
-          ) : (
-            <div className="h-full flex flex-col justify-center items-center">
-              <div className="font-bold text-4xl m-2">Hello, <span className="text-primary">Man</span></div>
-              <div className=" text-5xl">{defPrompt}</div>
+      <div className="w-full flex flex-col items-center h-full">
+        <div className="flex-1 w-4/5  overflow-auto p-6 flex flex-col gap-4">
+          {responses.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-full">
+              <div className="font-bold text-4xl">Hello, <span className="text-primary">Man</span></div>
+              <div className="text-2xl">{defPrompt}</div>
             </div>
           )}
+
+          {responses.map((item, index) => (
+            <div
+              key={index}
+              className={`p-4 rounded-xl shadow-md max-w-[90%] ${item.type === 'user' ? 'self-end bg-primary' : 'self-start bg-white'}`}
+            >
+              {item.type === 'user' ? item.content : (
+                <div className="prose prose prose-sm sm:prose lg:prose-lg">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {item.content.result}
+                  </ReactMarkdown>
+                </div>
+              )}
+            </div>
+          ))}
+           <div ref={messagesEndRef} />
         </div>
 
-        <div className="w-4/5 bg-white border rounded-2xl shadow-xl shadow-gray-200 h-1/6 mb-4">
+
+        <div className="w-full sm:w-4/5 bg-white border rounded-2xl shadow-xl shadow-gray-200 h-1/6 mb-4">
           <form onSubmit={handleSubmit} className="h-full px-4 py-3">
             <input
               placeholder="Ask anything..."
@@ -125,44 +123,48 @@ export default function Dashboard() {
                   type="submit"
                   className="mx-2 p-2 w-fit border rounded-4xl text-white "
                 >
-                  {(
-                    <><div className="flex px-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg>
-                      <span className="text-black font-bold px-1">Upload</span>
-                    </div>
-                    </>
-                  )}
+                  <div className="flex px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg>
+                    <span className="text-black font-bold hidden px-1 md:block ">Upload</span>
+                  </div>
                 </button>
               </div>
-              <div>
+              <div className="flex">
                 <button
                   onClick={toggleMic}
                   type="button"
                   style={{ backgroundColor: isListening ? "red" : "" }}
                   className="mx-2 p-2 w-fit border rounded-[50%] text-white "
                 >
-                  {isListening ? (<><div >
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="m710-362-58-58q14-23 21-48t7-52h80q0 44-13 83.5T710-362ZM480-594Zm112 112-72-72v-206q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v126l-80-80v-46q0-50 35-85t85-35q50 0 85 35t35 85v240q0 11-2.5 20t-5.5 18ZM440-120v-123q-104-14-172-93t-68-184h80q0 83 57.5 141.5T480-320q34 0 64.5-10.5T600-360l57 57q-29 23-63.5 39T520-243v123h-80Zm352 64L56-792l56-56 736 736-56 56Z" /></svg>                  </div></>) : (
-                    <><div>
-                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-400q-50 0-85-35t-35-85v-240q0-50 35-85t85-35q50 0 85 35t35 85v240q0 50-35 85t-85 35Zm0-240Zm-40 520v-123q-104-14-172-93t-68-184h80q0 83 58.5 141.5T480-320q83 0 141.5-58.5T680-520h80q0 105-68 184t-172 93v123h-80Zm40-360q17 0 28.5-11.5T520-520v-240q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v240q0 17 11.5 28.5T480-480Z" /></svg>                  </div>
-                    </>)}
+                  {isListening ? (
+                    <div>
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="m710-362-58-58q14-23 21-48t7-52h80q0 44-13 83.5T710-362ZM480-594Zm112 112-72-72v-206q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v126l-80-80v-46q0-50 35-85t85-35q50 0 85 35t35 85v240q0 11-2.5 20t-5.5 18ZM440-120v-123q-104-14-172-93t-68-184h80q0 83 57.5 141.5T480-320q34 0 64.5-10.5T600-360l57 57q-29 23-63.5 39T520-243v123h-80Zm352 64L56-792l56-56 736 736-56 56Z" /></svg>
+                    </div>
+                  ) : (
+                    <div>
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-400q-50 0-85-35t-35-85v-240q0-50 35-85t85-35q50 0 85 35t35 85v240q0 50-35 85t-85 35Zm0-240Zm-40 520v-123q-104-14-172-93t-68-184h80q0 83 58.5 141.5T480-320q83 0 141.5-58.5T680-520h80q0 105-68 184t-172 93v123h-80Zm40-360q17 0 28.5-11.5T520-520v-240q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v240q0 17 11.5 28.5T480-480Z" /></svg>
+                    </div>
+                  )}
                 </button>
                 <button
                   type="submit"
                   className="mx-2 p-2 w-fit border rounded-[50%] text-white bg-primary "
                 >
-                  {isStreaming ? (<div><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M320-160h320v-120q0-66-47-113t-113-47q-66 0-113 47t-47 113v120Zm160-360q66 0 113-47t47-113v-120H320v120q0 66 47 113t113 47ZM160-80v-80h80v-120q0-61 28.5-114.5T348-480q-51-32-79.5-85.5T240-680v-120h-80v-80h640v80h-80v120q0 61-28.5 114.5T612-480q51 32 79.5 85.5T720-280v120h80v80H160Z" /></svg></div>) : (
-                    <><div >
+                  {isStreaming ? (
+                    <div>
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M320-160h320v-120q0-66-47-113t-113-47q-66 0-113 47t-47 113v120Zm160-360q66 0 113-47t47-113v-120H320v120q0 66 47 113t113 47ZM160-80v-80h80v-120q0-61 28.5-114.5T348-480q-51-32-79.5-85.5T240-680v-120h-80v-80h640v80h-80v120q0 61-28.5 114.5T612-480q51 32 79.5 85.5T720-280v120h80v80H160Z" /></svg>
+                    </div>
+                  ) : (
+                    <div>
                       <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" /></svg>
                     </div>
-                    </>)}
+                  )}
                 </button>
               </div>
-
             </div>
           </form>
-        </div >
+        </div>
       </div>
-    </div >
+    </div>
   )
 }

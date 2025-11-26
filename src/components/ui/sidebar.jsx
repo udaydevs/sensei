@@ -1,111 +1,153 @@
 "use client";
-import { useState } from "react";
 
-export default function DefaultSidebar() {
-  const [open, setOpen] = useState(false);
+import React, { useState, createContext, useContext } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { IconMenu2, IconX } from "@tabler/icons-react";
+import { cn } from "@/lib/utils";
+
+// ---------------------------
+// Context Setup
+// ---------------------------
+const SidebarContext = createContext(undefined);
+
+export const useSidebar = () => {
+  const context = useContext(SidebarContext);
+  if (!context) {
+    throw new Error("useSidebar must be used inside <SidebarProvider>");
+  }
+  return context;
+};
+
+// ---------------------------
+// Provider
+// ---------------------------
+export const SidebarProvider = ({ children, open: openProp, setOpen: setOpenProp, animate = true }) => {
+  const [openState, setOpenState] = useState(false);
+
+  const open = openProp !== undefined ? openProp : openState;
+  const setOpen = setOpenProp !== undefined ? setOpenProp : setOpenState;
+
+  return (
+    <SidebarContext.Provider value={{ open, setOpen, animate }}>
+      {children}
+    </SidebarContext.Provider>
+  );
+};
+
+// ---------------------------
+// Sidebar Wrapper
+// ---------------------------
+export const Sidebar = ({ children, open, setOpen, animate }) => {
+  return (
+    <SidebarProvider open={open} setOpen={setOpen} animate={animate}>
+      {children}
+    </SidebarProvider>
+  );
+};
+
+// ---------------------------
+// Body (Desktop + Mobile)
+// ---------------------------
+export const SidebarBody = ({ children, className }) => {
+  return (
+    <>
+      <DesktopSidebar className={className}>{children}</DesktopSidebar>
+      <MobileSidebar className={className}>{children}</MobileSidebar>
+    </>
+  );
+};
+
+// ---------------------------
+// Desktop Sidebar
+// ---------------------------
+export const DesktopSidebar = ({ className, children }) => {
+  const { open, setOpen, animate } = useSidebar();
+
+  return (
+    <motion.div
+      className={cn(
+        "h-full px-4 py-4 hidden md:flex flex-col bg-neutral-100 dark:bg-neutral-800 shrink-0",
+        className
+      )}
+      animate={{
+        width: animate ? (open ? 300 : 60) : 300,
+      }}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// ---------------------------
+// Mobile Sidebar
+// ---------------------------
+export const MobileSidebar = ({ className, children }) => {
+  const { open, setOpen } = useSidebar();
 
   return (
     <>
-      {/* Mobile Toggle Button */}
-      <button
-        onClick={() => setOpen(true)}
-        type="button"
-        className="text-heading bg-transparent border border-transparent hover:bg-neutral-secondary-medium
-        focus:ring-4 focus:ring-neutral-tertiary font-medium rounded-base mt-3 ms-3 p-2 sm:hidden"
+      <div
+        className={cn(
+          "h-10 px-4 py-4 flex sm:hidden items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-fit md:w-full "
+        )}
       >
-        <svg
-          className="w-6 h-6"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeWidth="2"
-            d="M5 7h14M5 12h14M5 17h10"
-          />
-        </svg>
-      </button>
+        <IconMenu2
+          className="text-neutral-800 dark:text-neutral-200"
+          onClick={() => setOpen(!open)}
+        />
 
-      {/* BACKDROP FOR MOBILE */}
-      {open && (
-        <div
-          onClick={() => setOpen(false)}
-          className="fixed inset-0 bg-black/40 z-30 sm:hidden"
-        ></div>
-      )}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ x: "-100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: "-100%", opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className={cn(
+                "fixed inset-0 h-full w-full bg-white dark:bg-neutral-900 p-10 z-[100] flex flex-col",
+                className
+              )}
+            >
+              <div
+                className="absolute right-10 top-10 text-neutral-800 dark:text-neutral-200"
+                onClick={() => setOpen(false)}
+              >
+                <IconX />
+              </div>
 
-      {/* SIDEBAR PANEL */}
-      <aside
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-neutral-primary-soft border-r border-default
-        transform transition-transform duration-300 
-        ${open ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0`}
-      >
-        {/* Close button for mobile */}
-        <button
-          onClick={() => setOpen(false)}
-          className="sm:hidden absolute top-4 right-4 p-2"
-        >
-          <svg
-            className="w-5 h-5"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeWidth="2"
-              d="M6 6l12 12M18 6l-12 12"
-            />
-          </svg>
-        </button>
-
-        {/* Sidebar Content */}
-        <div className="h-full px-4 py-6 overflow-y-auto">
-          <ul className="space-y-2 font-medium">
-            <li>
-              <a className="flex items-center px-2 py-1.5 hover:bg-neutral-tertiary rounded-base">
-                Dashboard
-              </a>
-            </li>
-
-            <li>
-              <a className="flex items-center px-2 py-1.5 hover:bg-neutral-tertiary rounded-base">
-                Kanban
-              </a>
-            </li>
-
-            <li>
-              <a className="flex items-center px-2 py-1.5 hover:bg-neutral-tertiary rounded-base">
-                Inbox
-                <span className="ml-2 bg-danger-soft text-danger-strong text-xs px-2 py-0.5 rounded">
-                  2
-                </span>
-              </a>
-            </li>
-
-            <li>
-              <a className="flex items-center px-2 py-1.5 hover:bg-neutral-tertiary rounded-base">
-                Users
-              </a>
-            </li>
-
-            <li>
-              <a className="flex items-center px-2 py-1.5 hover:bg-neutral-tertiary rounded-base">
-                Products
-              </a>
-            </li>
-
-            <li>
-              <a className="flex items-center px-2 py-1.5 hover:bg-neutral-tertiary rounded-base">
-                Sign In
-              </a>
-            </li>
-          </ul>
-        </div>
-      </aside>
+              {children}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </>
   );
-}
+};
+
+// ---------------------------
+// Sidebar Link
+// ---------------------------
+export const SidebarLink = ({ link, className }) => {
+  const { open, animate } = useSidebar();
+
+  return (
+    <a
+      href={link.href}
+      className={cn("flex items-center gap-2 group/sidebar py-2", className)}
+    >
+      {link.icon}
+
+      <motion.span
+        animate={{
+          opacity: animate ? (open ? 1 : 0) : 1,
+          width: animate ? (open ? "auto" : 0) : "auto",
+        }}
+        className="text-neutral-700 dark:text-neutral-200 text-sm whitespace-pre transition-all duration-150 overflow-hidden"
+      >
+        {link.label}
+      </motion.span>
+    </a>
+  );
+};
