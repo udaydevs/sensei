@@ -5,7 +5,7 @@ import { IconHome, IconSettings, IconUser } from "@tabler/icons-react";
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="flex h-screen w-full ">
+      <body className="flex h-screen w-full  ">
         <Sidebar>
           <SidebarBody className="bg-neutral-100 dark:bg-neutral-900 px-4 py-6">
             <SidebarLink
@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
             />
           </SidebarBody>
         </Sidebar>
-        <main className="flex-1 overflow-y-auto bg-white dark:bg-neutral-950 p-1 sm:p-4">
+        <main className="flex-1  dark:bg-neutral-950 p-1 sm:p-4 ">
           {children}
         </main>
 

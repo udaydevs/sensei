@@ -53,6 +53,7 @@ export default function Dashboard() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (isStreaming) return
     if (!prompt.trim()) return
 
     setDefPrompt('Thinking...')
@@ -61,7 +62,7 @@ export default function Dashboard() {
     setPrompt('')
 
     try {
-      const res = await fetch("http://localhost:8001/prompt/", {
+      const res = await fetch("http://192.168.1.14:8001/prompt/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
@@ -79,10 +80,9 @@ export default function Dashboard() {
 
 
   return (
-    <div className="w-full h-[99%] flex p-4">
-
+    <div className="w-full h-screen flex p-4">
       <div className="w-full flex flex-col items-center h-full">
-        <div className="flex-1 w-4/5  overflow-auto p-6 flex flex-col gap-4">
+        <div className="flex-1 w-full sm:w-4/5   p-2 overflow-auto scrollbar sm:py-6 sm:px-2 flex flex-col">
           {responses.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full">
               <div className="font-bold text-4xl">Hello, <span className="text-primary">Man</span></div>
@@ -93,10 +93,10 @@ export default function Dashboard() {
           {responses.map((item, index) => (
             <div
               key={index}
-              className={`p-4 rounded-xl shadow-md max-w-[90%] ${item.type === 'user' ? 'self-end bg-primary' : 'self-start bg-white'}`}
+              className={`my-2 p-4  rounded-xl shadow-md max-w-[95%]  sm:max-w-[90%] ${item.type === 'user' ? 'self-end bg-primary' : 'self-start bg-white'}`}
             >
               {item.type === 'user' ? item.content : (
-                <div className="prose prose prose-sm sm:prose lg:prose-lg">
+                <div className="prose prose prose-sm sm:prose overflow-auto lg:prose-lg px-2">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {item.content.result}
                   </ReactMarkdown>
@@ -108,8 +108,8 @@ export default function Dashboard() {
         </div>
 
 
-        <div className="w-full sm:w-4/5 bg-white border rounded-2xl shadow-xl shadow-gray-200 h-1/6 mb-4">
-          <form onSubmit={handleSubmit} className="h-full px-4 py-3">
+        <div className="w-full  sm:w-4/5 bg-white border py-2 rounded-2xl shadow-xl shadow-gray-200 h-auto mb-4">
+          <form onSubmit={handleSubmit}  className="h-full px-4 py-3">
             <input
               placeholder="Ask anything..."
               required
@@ -117,15 +117,15 @@ export default function Dashboard() {
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
             ></input>
-            <div className="flex justify-between py-2">
+            <div className="flex justify-between py-2 my-2">
               <div>
                 <button
                   type="submit"
                   className="mx-2 p-2 w-fit border rounded-4xl text-white "
                 >
-                  <div className="flex px-1">
+                  <div className="flex">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg>
-                    <span className="text-black font-bold hidden px-1 md:block ">Upload</span>
+                    <span className="text-black font-bold hidden px-1 sm:block sm:px-0 ">Upload</span>
                   </div>
                 </button>
               </div>

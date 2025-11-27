@@ -70,7 +70,7 @@ export const DesktopSidebar = ({ className, children }) => {
         className
       )}
       animate={{
-        width: animate ? (open ? 300 : 60) : 300,
+        width: animate ? (open ? 250 : 60) : 300,
       }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
@@ -88,43 +88,57 @@ export const MobileSidebar = ({ className, children }) => {
 
   return (
     <>
-      <div
-        className={cn(
-          "h-10 px-4 py-4 flex sm:hidden items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-fit md:w-full "
-        )}
+      {/* Circular Button (Mobile Only) */}
+      <button
+        onClick={() => setOpen(true)}
+        className="
+          fixed top-4 left-4
+          h-12 w-12 rounded-full
+          bg-neutral-100 dark:bg-neutral-100
+          flex items-center justify-center
+          shadow-lg z-[50] sm:hidden
+        "
       >
-        <IconMenu2
-          className="text-neutral-800 dark:text-neutral-200"
-          onClick={() => setOpen(!open)}
-        />
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" /></svg>
+      </button>
 
-        <AnimatePresence>
-          {open && (
+      <AnimatePresence>
+        {open && (
+          // ⬇⬇ BACKDROP (clicking it closes sidebar)
+          <div
+            className="fixed inset-0 bg-black/30 z-[90] sm:hidden"
+            onClick={() => setOpen(false)}
+          >
+            {/* Prevent closing when clicking inside sidebar */}
             <motion.div
+              onClick={(e) => e.stopPropagation()}
               initial={{ x: "-100%", opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "-100%", opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className={cn(
-                "fixed inset-0 h-full w-full bg-white dark:bg-neutral-900 p-10 z-[100] flex flex-col",
+                "absolute left-0 top-0 h-full w-3/5 bg-white dark:bg-neutral-900 p-10 z-[100] flex flex-col justify-start",
                 className
               )}
             >
               <div
-                className="absolute right-10 top-10 text-neutral-800 dark:text-neutral-200"
+                className="right-10 top-10 left-0 text-neutral-800 dark:text-neutral-200"
                 onClick={() => setOpen(false)}
               >
-                <IconX />
+                <div className="flex justify-end">
+                  <IconX />
+                </div>
               </div>
 
-              {children}
+              <div>{children}</div>
             </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
+
 
 // ---------------------------
 // Sidebar Link
