@@ -62,7 +62,7 @@ export default function Dashboard() {
     setPrompt('')
 
     try {
-      const res = await fetch("http://192.168.1.14:8001/prompt/", {
+      const res = await fetch("https://sensei-backend-104839152918.europe-west1.run.app/prompt/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
