@@ -2,6 +2,8 @@
 import { useRef, useState,useEffect } from "react"
 import remarkGfm from "remark-gfm"
 import ReactMarkdown from "react-markdown"
+import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
+import { IconHome, IconSettings, IconUser, IconBrandLine  } from "@tabler/icons-react";
 
 const main_url = "https://sensei-backend-104839152918.europe-west1.run.app/prompt/"
 const local_url = "http://127.0.0.1:8002/prompt/"
@@ -84,6 +86,23 @@ export default function Dashboard() {
 
   return (
     <div className="w-full h-screen flex p-4">
+       <Sidebar>
+          <SidebarBody className="bg-neutral-100 dark:bg-neutral-900 px-4 py-6">
+            <SidebarLink
+              link={{ label: "Home", href: "/", icon: <IconHome /> }}
+            />
+            <SidebarLink
+              link={{ label: "Chat", href: "/chat", icon: <IconBrandLine /> }}
+            />
+
+            <SidebarLink
+              link={{ label: "Profile", href: "/profile", icon: <IconUser /> }}
+            />
+            <SidebarLink
+              link={{ label: "Settings", href: "/settings", icon: <IconSettings /> }}
+            />
+          </SidebarBody>
+        </Sidebar> 
       <div className="w-full flex flex-col items-center h-full">
         <div className="flex-1 w-full sm:w-4/5   p-2 overflow-auto scrollbar sm:py-6 sm:px-2 flex flex-col">
           {responses.length === 0 && (
