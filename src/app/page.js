@@ -7,7 +7,7 @@ export default function HomePage() {
   const router = useRouter()
 
   useEffect(() => {
-    router.push("/chat")
+    router.push("/home")
   }, [router])
 
   return <div>Redirecting to Login...</div>

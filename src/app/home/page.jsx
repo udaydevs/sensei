@@ -1,7 +1,13 @@
+"use client"
+import Hero from "@/components/items/hero"
+
+
 export default function Page(){
   return(
     <>
-      <h1>hello</h1>
+      <div className="w-screen h-screen">
+        <Hero/>
+      </div>
     </>
   )
 }
