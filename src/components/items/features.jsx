@@ -1,0 +1,181 @@
+import { Button } from "../ui/button";
+import { useState } from "react";
+
+const faqs = [
+  {
+    question: "How does Sensei help me learn Japanese?",
+    answer:
+      "Sensei explains Japanese step by step with translations, pronunciation, grammar breakdowns, and real usage so you truly understand the language.",
+  },
+  {
+    question: "Do I need prior knowledge of Japanese?",
+    answer:
+      "No. Sensei is designed for complete beginners as well as advanced learners. You can start using English or Japanese.",
+  },
+  {
+    question: "Does Sensei include pronunciation help?",
+    answer:
+      "Yes. Every Japanese sentence includes English pronunciation (romaji) so you can read and speak with confidence.",
+  },
+  {
+    question: "Can I learn grammar without memorizing rules?",
+    answer:
+      "Absolutely. Sensei focuses on understanding grammar naturally through examples and sentence breakdowns.",
+  },
+  {
+    question: "Is Sensei free to use?",
+    answer:
+      "Sensei offers free access to core features, with optional advanced tools for deeper learning.",
+  },
+];
+
+export default function Features() {
+  const [open, setOpen] = useState(0)
+  return (
+    <section className="w-full bg-white flex flex-col items-center">
+
+      <div className="w-full flex flex-col items-center pt-24 mb-12">
+        <p className="text-lg text-[#5d5858] font-semibold mb-2">FEATURES</p>
+
+        <h2 className="text-4xl font-bold text-[#1c1d26] text-center mb-3">
+          All the tools you need to learn Japanese
+        </h2>
+
+        <p className="text-lg text-center text-[#5d5858] max-w-2xl">
+          Empowering you with intelligent features to simplify learning Japanese
+          and help you communicate with confidence naturally.
+        </p>
+      </div>
+
+      <div className="w-4/5 md:w-3/4 flex gap-6 mb-12">
+        
+        <div className="w-2/5 border rounded-3xl p-6 flex flex-col">
+          <div className="flex justify-center mb-4">
+            <img
+              className="h-48 object-contain"
+              src="https://img.freepik.com/free-vector/online-learning-concept-illustration_114360-4766.jpg"
+              alt="Word Breakdown"
+            />
+          </div>
+          <h3 className="text-2xl font-semibold mb-2">
+            Word-by-Word Breakdown
+          </h3>
+          <p className="text-[#5d5858]">
+            Understand sentences with clear word and particle breakdowns that
+            make complex grammar easy.
+          </p>
+        </div>
+
+        <div className="w-3/5 border rounded-3xl p-6 flex flex-col">
+          <div className="flex justify-center mb-4">
+            <img
+              className="h-56 object-contain"
+              src="https://img.freepik.com/free-vector/ai-powered-language-learning-illustration_23-2149321922.jpg"
+              alt="AI Tutor"
+            />
+          </div>
+          <h3 className="text-2xl font-semibold mb-2">
+            AI-Powered Japanese Understanding
+          </h3>
+          <p className="text-[#5d5858] max-w-lg">
+            Learn Japanese with an intelligent tutor that explains meaning,
+            context, and usage so you can think naturally in Japanese.
+          </p>
+        </div>
+      </div>
+
+      <div className="w-4/5 md:w-3/4 flex gap-6 mb-16">
+        
+        <div className="w-3/5 border rounded-3xl p-6 flex flex-col">
+          <div className="flex justify-center mb-4">
+            <img
+              className="h-56 object-contain"
+              src="https://img.freepik.com/free-vector/online-education-concept_52683-36266.jpg"
+              alt="Pronunciation"
+            />
+          </div>
+          <h3 className="text-2xl font-semibold mb-2">
+            Pronunciation with Romaji
+          </h3>
+          <p className="text-[#5d5858] max-w-lg">
+            Every sentence includes English pronunciation so you know exactly
+            how to speak Japanese with confidence.
+          </p>
+        </div>
+
+        <div className="w-2/5 border rounded-3xl p-6 flex flex-col">
+          <div className="flex justify-center mb-4">
+            <img
+              className="h-48 object-contain"
+              src="https://img.freepik.com/free-vector/learning-languages-concept_23-2148620772.jpg"
+              alt="Grammar"
+            />
+          </div>
+          <h3 className="text-2xl font-semibold mb-2">
+            Simple Grammar Notes
+          </h3>
+          <p className="text-[#5d5858]">
+            Clear explanations that help you understand how Japanese grammar
+            really works.
+          </p>
+        </div>
+      </div>
+
+      <div className="w-3/4 h-[50vh] flex justify-between mt-24 mb-24">
+        <div className="w-2/5 ">
+          <p className="text-sm font-semibold p-1 text-[#5d5858] mb-6">FAQ</p>
+          <h3 className="text-5xl my-2  p-0 font-bold text-[#1c1d26]">
+            Everything you need to know
+          </h3>
+          <h4 className="text-2xl my-6 font-normal text-[#5d5858]">
+            Still have a question? Reach our customer service.
+          </h4>
+          <Button className="bg-black p-3 my-5 font-bold text-md text-white rounded-xl" size="lg">
+              Start learning
+          </Button>
+        </div>
+<div className="w-2/4 px-4">
+  <div className="w-full">
+    {faqs.map((faq, index) => (
+      <div
+        key={index}
+        className="border-b w-full py-4 cursor-pointer"
+        onClick={() => setOpen(open === index ? null : index)}
+      >
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-medium text-[#1c1d26]">
+            {faq.question}
+          </h3>
+
+          <span
+            className={`text-xl mx-2 p-2 w-fit border rounded-full bg-primary 
+              transition-transform duration-300 
+              ${open === index ? "rotate-45" : "rotate-0"}
+            `}
+          >
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 -960 960 960">
+                <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+              </svg> 
+          </span>
+        </div>
+
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out
+            ${open === index ? "max-h-40 opacity-100 mt-3" : "max-h-0 opacity-0"}
+          `}
+        >
+          <p className="text-[#5d5858] text-sm leading-relaxed">
+            {faq.answer}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+        </div>
+      
+
+    </section>
+  );
+}
