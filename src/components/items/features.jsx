@@ -122,7 +122,7 @@ export default function Features() {
         </div>
       </div>
 
-      <div className="w-full max-w-7xl right-0 flex flex-col md:flex-row gap-10 mb-24">
+      <div className="w-full max-w-7xl right-0 flex justify-between flex-col md:flex-row gap-10 mb-24">
         <div className="md:w-2/5">
           <p className="text-sm font-semibold text-[#5d5858] mb-4">FAQ</p>
           <h3 className="text-3xl md:text-5xl font-bold text-[#1c1d26] mb-4">

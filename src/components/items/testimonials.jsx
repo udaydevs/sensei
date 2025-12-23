@@ -1,29 +1,29 @@
 export default function Testimonials() {
   return (
-    <div className="w-full h-screen bg-[#f8f9fb] py-24 flex justify-center">
-      <div className="w-4/5 md:w-3/4">
+    <div className="w-full min-h-screen bg-[#f8f9fb] py-16 md:py-24 flex justify-center">
+      <div className="w-[90%] md:w-3/4">
 
-        <div className="flex flex-col items-center mb-14">
-          <div className="flex justify-center py-1">
-              <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#5d5858"><path d="M185-80q-17 0-29.5-12.5T143-122v-105q0-90 56-159t144-88q-40 28-62 70.5T259-312v190q0 11 3 22t10 20h-87Zm147 0q-17 0-29.5-12.5T290-122v-190q0-70 49.5-119T459-480h189q70 0 119 49t49 119v64q0 70-49 119T648-80H332Zm148-484q-66 0-112-46t-46-112q0-66 46-112t112-46q66 0 112 46t46 112q0 66-46 112t-112 46Z"/></svg>
-            <p className="text-sm font-semibold text-[#5d5858] ">
+        <div className="flex flex-col items-center mb-14 text-center">
+          <div className="flex justify-center py-1 items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#5d5858">
+              <path d="M185-80q-17 0-29.5-12.5T143-122v-105q0-90 56-159t144-88q-40 28-62 70.5T259-312v190q0 11 3 22t10 20h-87Zm147 0q-17 0-29.5-12.5T290-122v-190q0-70 49.5-119T459-480h189q70 0 119 49t49 119v64q0 70-49 119T648-80H332Zm148-484q-66 0-112-46t-46-112q0-66 46-112t112-46q66 0 112 46t46 112q0 66-46 112t-112 46Z"/>
+            </svg>
+            <p className="text-sm font-semibold text-[#5d5858]">
               TESTIMONIAL
             </p>
           </div>
-          <div>
-            <h2 className="text-5xl font-sans font-bold text-[#1c1d26] mb-3">
-              Trusted by Japanese Learners Worldwide
-            </h2>
-          </div>
-          <div>
-            <p className="text-[#5d5858] text-center max-w-2xl mx-auto">
-              Thousands of learners are improving their Japanese faster with
-              Sensei’s AI-powered guidance.
-            </p>
-          </div>
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1c1d26] mb-3">
+            Trusted by Japanese Learners Worldwide
+          </h2>
+
+          <p className="text-[#5d5858] max-w-2xl">
+            Thousands of learners are improving their Japanese faster with
+            Sensei’s AI-powered guidance.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
 
           <div className="flex flex-col gap-6">
             <TestimonialCard
@@ -40,7 +40,7 @@ export default function Testimonials() {
             />
           </div>
 
-          <div className="rounded-3xl overflow-hidden bg-white shadow-sm">
+          <div className="hidden lg:block rounded-3xl overflow-hidden bg-white shadow-sm">
             <div className="relative">
               <img
                 src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"
@@ -69,7 +69,6 @@ export default function Testimonials() {
           </div>
 
         </div>
-
       </div>
     </div>
   );
@@ -78,8 +77,8 @@ export default function Testimonials() {
 function TestimonialCard({ name, role, text }) {
   return (
     <div className="bg-white border rounded-3xl p-6 shadow-sm">
-      <div className="flex mb-3">
-        {"★★★★★".split("").map((star, i) => (
+      <div className="mb-3">
+        {"★★★★★".split("").map((_, i) => (
           <span key={i} className="text-yellow-400">★</span>
         ))}
       </div>
