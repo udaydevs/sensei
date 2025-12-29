@@ -5,8 +5,8 @@ import ReactMarkdown from "react-markdown"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { IconHome, IconSettings, IconUser, IconBrandLine  } from "@tabler/icons-react";
 
-const main_url = "https://sensei-backend-104839152918.europe-west1.run.app/prompt/"
-const local_url = "http://127.0.0.1:8002/prompt/"
+const main_url = "https://sensei-backend-104839152918.europe-west1.run.app/chat/translator/"
+const local_url = "http://127.0.0.1:8000/chat/translator/"
 
 export default function Dashboard() {
   const [prompt, setPrompt] = useState("")
@@ -67,7 +67,7 @@ export default function Dashboard() {
     setPrompt('')
 
     try {
-      const res = await fetch(main_url, {
+      const res = await fetch(local_url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
@@ -96,7 +96,7 @@ export default function Dashboard() {
             />
 
             <SidebarLink
-              link={{ label: "Profile", href: "/profile", icon: <IconUser /> }}
+              link={{ label: "Profile", href: "/user", icon: <IconUser /> }}
             />
             <SidebarLink
               link={{ label: "Settings", href: "/settings", icon: <IconSettings /> }}

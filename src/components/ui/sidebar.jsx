@@ -76,7 +76,6 @@ export const MobileSidebar = ({ className, children }) => {
 
   return (
     <>
-      {/* Circular Button (Mobile Only) */}
       <button
         onClick={() => setOpen(true)}
         className="
@@ -92,12 +91,10 @@ export const MobileSidebar = ({ className, children }) => {
 
       <AnimatePresence>
         {open && (
-          // ⬇⬇ BACKDROP (clicking it closes sidebar)
           <div
             className="fixed inset-0 bg-black/30 z-[90] sm:hidden"
             onClick={() => setOpen(false)}
           >
-            {/* Prevent closing when clicking inside sidebar */}
             <motion.div
               onClick={(e) => e.stopPropagation()}
               initial={{ x: "-100%", opacity: 0 }}
