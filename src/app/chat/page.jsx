@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { IconHome, IconSettings, IconUser, IconBrandLine } from "@tabler/icons-react";
 
+const vercel_url = "https://sensei-backend-pi.vercel.app/chat/translator/"
 const main_url = "https://sensei-backend-104839152918.europe-west1.run.app/prompt/"
 const local_url = "http://127.0.0.1:8000/chat/translator/"
 
@@ -73,7 +74,6 @@ export default function Dashboard() {
         body: JSON.stringify({ prompt }),
       })
       const data = await res.json()
-      console.log(data)
       setResponses(prev => [...prev, { type: 'ai', content: data }])
     } catch (err) {
       console.error("Error:", err)

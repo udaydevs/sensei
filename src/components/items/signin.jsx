@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import axios from "axios";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 // import api from '@/api/ApiInstance';
 
 export default function SignInForm({ setActiveForm }) {
@@ -12,6 +13,7 @@ export default function SignInForm({ setActiveForm }) {
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter()
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -36,12 +38,13 @@ export default function SignInForm({ setActiveForm }) {
 
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("token_type", response.data.token_type);
-      toast.success("Login successful!", { duration: 3000 , position: 'top-left'});
+      toast.success("Login successful!", { duration: 3000, position: 'top-left' });
+      router.push('/chat')
     } catch (error) {
       if (error.response) {
-        toast.error(error.response.data.detail || "Invalid credentials", { duration: 5000 , position: 'top-left'});
+        toast.error(error.response.data.detail || "Invalid credentials", { duration: 5000, position: 'top-left' });
       } else {
-        toast.error("Unable to reach the server.", { duration: 8000 , position: 'top-left'});
+        toast.error("Unable to reach the server.", { duration: 8000, position: 'top-left' });
       }
     } finally {
       setIsLoading(false);
@@ -49,7 +52,7 @@ export default function SignInForm({ setActiveForm }) {
   };
 
   return (
-    <form className="my-3" onSubmit={handleSubmit}>
+    <form className="my-3 mt-5" onSubmit={handleSubmit}>
       <LabelInputContainer className="mb-2">
         <Input
           id="email"
@@ -94,6 +97,21 @@ export default function SignInForm({ setActiveForm }) {
           Sign Up
         </button>
       </p>
+
+      <div className="my-4 h-0.5 w-full bg-linear-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
+
+
+      <button
+        className={cn(
+          "group/btn relative block h-12 w-full border-gray-300 border rounded-md font-bold text-black shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset transition-all",
+          isLoading && "bg-gray-500 cursor-not-allowed"
+        )}
+        type="submit"
+        disabled={isLoading}
+      >
+        {isLoading ? 'Processing...' : 'SignIn with Google'}
+        <BottomGradient />
+      </button>
     </form>
   );
 }

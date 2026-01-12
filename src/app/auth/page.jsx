@@ -10,10 +10,10 @@ export default function Page() {
   const [activeForm, setActiveForm] = useState("signup");
 
   return (
-    <div className="relative w-full flex justify-center items-center h-screen overflow-hidden">
-      <div className="relative z-10 lg:h-[60%] backdrop-blur-lg border border-white/20 shadow-lg mx-auto w-full max-w-md rounded-4xl p-4 md:p-8 max-sm:mx-3 dark:bg-black/60">
+    <div className="relative w-full flex justify-center items-center  h-screen overflow-hidden">
+      <div className="relative z-10 h-[55%] lg:h-[60%] backdrop-blur-lg bg-white border border-white/20 shadow-lg mx-auto w-full max-w-md rounded-4xl p-4 md:p-8 max-sm:mx-3 dark:bg-black/60">
         
-        <div className="relative flex w-fit mb-6 h-[12%] rounded-4xl text-black bg-primary py-0.5 px-1 overflow-hidden">
+        <div className="relative flex w-fit mb-6 h-[12%] rounded-4xl  text-black bg-primary py-0.5 px-1 overflow-hidden">
           <motion.div
             layout
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
