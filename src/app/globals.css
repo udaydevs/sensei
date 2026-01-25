@@ -74,9 +74,7 @@ svg {
 html {
     scroll-behavior: smooth;
 }
-.MuiSlider-root {
-  color: #b89bf2;
-}
+
 
 :root {
     --default-font-family: "Noto Sans", sans-serif;

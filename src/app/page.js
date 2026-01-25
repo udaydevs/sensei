@@ -7,10 +7,7 @@ export default function HomePage() {
   const router = useRouter()
 
   useEffect(() => {
-    setTimeout(() => {
-      // router.push("/home")
-
-    }, 3000);
+      router.push("/home")
   }, [router])
 
   return (
@@ -48,9 +45,9 @@ export default function HomePage() {
         ))}
       </div>
       <span
-  className="pointer-events-none absolute inset-0 flex items-center justify-center
+  className="hidden md:flex pointer-events-none absolute inset-0  items-center justify-center
              select-none whitespace-nowrap
-             text-[12vw] lg:text-[18rem] font-black tracking-tight
+              md:text-[8rem] lg:text-[13rem] font-black tracking-tight
              bg-gray-50
              bg-clip-text text-transparent">
   読み込み中
