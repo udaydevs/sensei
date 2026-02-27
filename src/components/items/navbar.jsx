@@ -26,7 +26,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50  backdrop-blur-md border-b border-slate-100">
+      <nav className="sticky top-0 z-50 w-full overflow-hidden  backdrop-blur-md border-b border-slate-100">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-15 mb-1 items-center justify-between">
 
@@ -78,7 +78,7 @@ export default function Navbar() {
             className="fixed inset-0 z-40 bg-black/40"
             onClick={() => setOpen(false)}
           />
-          <aside className="fixed top-0 left-0 z-50 h-full w-64 bg-white p-6 flex flex-col gap-4">
+          <aside className="fixed top-0 left-0 z-50 md:hidden h-full w-64 bg-white p-6 flex flex-col gap-4">
             <button
               className="self-end text-xl"
               onClick={() => setOpen(false)}

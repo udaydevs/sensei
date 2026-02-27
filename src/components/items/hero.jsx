@@ -10,7 +10,7 @@ export default function Hero() {
 return (
     <div className="relative w-full min-h-screen sm:h-screen flex flex-col items-center justify-end">
         <div className="absolute w-[98%] z-10 flex justify-center lg:justify-end flex-col items-center h-screen bg-white bottom-0 left-1/2 transform -translate-x-1/2 rounded-tl-3xl   rounded-tr-3xl border">
-            <Pattern />
+            <Pattern/>
             <div className="z-10 border rounded-4xl px-1 sm:px-5 text-gray-600 text-xs sm:text-md" style={{ fontFamily: 'Noto Sans JP', fontWeight: 600 }}>
                 日本語を学ぶのは
                 <span style={{ fontFamily: 'Noto Sans JP', fontWeight: 900 }} className="text-primary px-1 sm:px-2 ">楽しいです</span>。
