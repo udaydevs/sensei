@@ -34,12 +34,11 @@ export default function SignInForm({ setActiveForm }) {
     try {
       const response = await axios.post("http://127.0.0.1:8000/auth/login/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
       });
-
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("token_type", response.data.token_type);
+      console.log(response)
       toast.success("Login successful!", { duration: 3000, position: 'top-left' });
-      router.push('/chat')
+      // router.push('/dashboard')
     } catch (error) {
       if (error.response) {
         toast.error(error.response.data.detail || "Invalid credentials", { duration: 5000, position: 'top-left' });

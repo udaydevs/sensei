@@ -32,6 +32,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import axios from "axios"
 
 const data = {
   user: {
@@ -153,6 +154,24 @@ const data = {
 export function AppSidebar({
   ...props
 }) {
+const [userData, setUserData] = React.useState([]);
+
+React.useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      const res = await axios.get(
+        "http://127.0.0.1:8000/auth/profile",
+        { withCredentials: true }
+      );
+      setUserData(res.data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+
+  fetchUser();
+}, []);
+  
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -177,7 +196,7 @@ export function AppSidebar({
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>
   );
