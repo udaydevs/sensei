@@ -2,7 +2,7 @@
 import { useRef, useState, useEffect } from "react"
 import remarkGfm from "remark-gfm"
 import ReactMarkdown from "react-markdown"
-import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
+import { Sidebar } from "@/components/ui/sidebar";
 import { IconHome, IconSettings, IconUser, IconBrandLine } from "@tabler/icons-react";
 
 const vercel_url = "https://sensei-backend-pi.vercel.app/chat/translator/"
@@ -14,7 +14,7 @@ export default function Dashboard() {
   const [defPrompt, setDefPrompt] = useState('How can I assist you today?')
   const [responses, setResponses] = useState([])
   const [isStreaming, setIsStreaming] = useState(false)
-  const [isListening, setIsListening] = useState(false)
+  const [isListening , setIsListening] = useState(false)
   const recognitionRef = useRef(null)
   const messagesEndRef = useRef(null)
 
@@ -86,23 +86,6 @@ export default function Dashboard() {
 
   return (
     <div className="w-full h-screen flex p-4">
-      <Sidebar>
-        <SidebarBody className="bg-neutral-100 dark:bg-neutral-900 px-4 py-6">
-          <SidebarLink
-            link={{ label: "Home", href: "/", icon: <IconHome /> }}
-          />
-          <SidebarLink
-            link={{ label: "Chat", href: "/chat", icon: <IconBrandLine /> }}
-          />
-
-          <SidebarLink
-            link={{ label: "Profile", href: "/user", icon: <IconUser /> }}
-          />
-          <SidebarLink
-            link={{ label: "Settings", href: "/settings", icon: <IconSettings /> }}
-          />
-        </SidebarBody>
-      </Sidebar>
       <div className="w-full flex flex-col items-center h-full">
         <div className="flex-1 w-full sm:w-4/5   p-2 overflow-auto scrollbar sm:py-6 sm:px-2 flex flex-col">
           {responses.length === 0 && (
