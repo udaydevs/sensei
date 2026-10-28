@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
+import { ThemeToggle } from "../theme-toggle";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -62,6 +63,7 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center gap-6 h-15">
+              <ThemeToggle/>
               <button
                 onClick={() => router.push("/auth")}
                 className="rounded-full bg-black px-6 py-2.5 text-[15px] font-semibold text-white hover:opacity-90 transition-opacity"
