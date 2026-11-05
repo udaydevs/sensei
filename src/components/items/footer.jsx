@@ -14,10 +14,10 @@ export default function Footer() {
               grammar, and real usage — not just translations.
             </p>
             <div className="flex gap-4">
-              <button className="px-6 py-3 bg-white text-black rounded-full text-sm font-medium hover:opacity-90 transition">
+              <button className="px-6 py-3 bg-white text-black rounded-full text-sm font-medium hover:opacity-80 transition cursor-pointer">
                 Get Started
               </button>
-              <button className="px-6 py-3 border border-[#2a2b32] rounded-full text-sm hover:bg-[#15161b] transition">
+              <button className="px-6 py-3 border border-[#2a2b32] rounded-full text-sm hover:bg-[#15161b] transition cursor-pointer">
                 Explore Features
               </button>
             </div>

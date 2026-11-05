@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body className="w-full bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors">
+      <body className="w-full bg-background text-muted transition-colors">
         <Providers>
           <Toaster />
           <main className="">

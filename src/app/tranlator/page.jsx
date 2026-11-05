@@ -14,7 +14,7 @@ export default function Dashboard() {
   const [defPrompt, setDefPrompt] = useState('How can I assist you today?')
   const [responses, setResponses] = useState([])
   const [isStreaming, setIsStreaming] = useState(false)
-  const [isListening , setIsListening] = useState(false)
+  const [isListening, setIsListening] = useState(false)
   const recognitionRef = useRef(null)
   const messagesEndRef = useRef(null)
 
@@ -155,8 +155,7 @@ export default function Dashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="mx-2 p-2 w-fit border rounded-[50%] text-white bg-primary"
-
+                  className="mx-2 p-2 w-fit border rounded-[50%] text-white bg-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isStreaming ? (
                     <div>
