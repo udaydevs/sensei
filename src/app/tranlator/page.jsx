@@ -14,7 +14,7 @@ export default function Dashboard() {
   const [defPrompt, setDefPrompt] = useState('How can I assist you today?')
   const [responses, setResponses] = useState([])
   const [isStreaming, setIsStreaming] = useState(false)
-  const [isListening , setIsListening] = useState(false)
+  const [isListening, setIsListening] = useState(false)
   const recognitionRef = useRef(null)
   const messagesEndRef = useRef(null)
 
@@ -118,8 +118,8 @@ export default function Dashboard() {
         <div className="w-full  sm:w-4/5 bg-white border py-2 rounded-2xl shadow-xl shadow-gray-200 h-auto mb-4">
           <form onSubmit={handleSubmit} className="h-full px-4 py-3">
             <input
+              type="text"
               placeholder="Ask anything..."
-              required
               className="w-full px-4 h-1/2 bg-white border-0 outline-none overflow-scroll overflow-y-auto p-2 rounded-xl "
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
@@ -127,7 +127,7 @@ export default function Dashboard() {
             <div className="flex justify-between py-2 my-2">
               <div>
                 <button
-                  type="submit"
+                  type="button"
                   className="mx-2 p-2 w-fit border rounded-4xl text-white "
                 >
                   <div className="flex">
@@ -155,8 +155,8 @@ export default function Dashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="mx-2 p-2 w-fit border rounded-[50%] text-white bg-primary"
-
+                  disabled={!prompt.trim() || isStreaming}
+                  className="mx-2 p-2 w-fit border rounded-[50%] text-white bg-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isStreaming ? (
                     <div>
