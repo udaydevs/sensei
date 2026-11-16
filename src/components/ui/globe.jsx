@@ -1,11 +1,21 @@
+
 "use client"
 
 import { useEffect, useRef } from "react"
 import createGlobe from "cobe"
 import { useMotionValue, useSpring } from "motion/react"
+import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 
 const MOVEMENT_DAMPING = 1400
+
+const LIGHT_GLOBE_COLORS = {
+  glowColor: [1,1,1],
+}
+
+const DARK_GLOBE_COLORS = {
+  glowColor: [225 / 255, 213 / 255, 198 / 255],
+}
 
 const GLOBE_CONFIG = {
   width: 1200,
@@ -37,15 +47,15 @@ const GLOBE_CONFIG = {
 
 export function Globe({
   className,
-  config = GLOBE_CONFIG
+  config = GLOBE_CONFIG,
 }) {
-  let phi = 0
-  let width = 0
   const canvasRef = useRef(null)
   const pointerInteracting = useRef(null)
-  const pointerInteractionMovement = useRef(0)
+
+  const { resolvedTheme } = useTheme()
 
   const r = useMotionValue(0)
+
   const rs = useSpring(r, {
     mass: 1,
     damping: 30,
@@ -54,20 +64,34 @@ export function Globe({
 
   const updatePointerInteraction = (value) => {
     pointerInteracting.current = value
+
     if (canvasRef.current) {
-      canvasRef.current.style.cursor = value !== null ? "grabbing" : "grab"
+      canvasRef.current.style.cursor =
+        value !== null ? "grabbing" : "grab"
     }
   }
 
   const updateMovement = (clientX) => {
     if (pointerInteracting.current !== null) {
       const delta = clientX - pointerInteracting.current
-      pointerInteractionMovement.current = delta
+
+      pointerInteracting.current = clientX
       r.set(r.get() + delta / MOVEMENT_DAMPING)
     }
   }
 
   useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    let phi = 0
+    let width = 0
+
+    const activeColors =
+      resolvedTheme === "dark"
+        ? DARK_GLOBE_COLORS
+        : LIGHT_GLOBE_COLORS
+
     const onResize = () => {
       if (canvasRef.current) {
         width = canvasRef.current.offsetWidth
@@ -77,25 +101,33 @@ export function Globe({
     window.addEventListener("resize", onResize)
     onResize()
 
-    const globe = createGlobe(canvasRef.current, {
+    const globe = createGlobe(canvas, {
       ...config,
+      ...activeColors,
       width: width * 2,
       height: width * 2,
+
       onRender: (state) => {
-        if (!pointerInteracting.current) phi += 0.005
+        if (pointerInteracting.current === null) {
+          phi += 0.005
+        }
+
         state.phi = phi + rs.get()
         state.width = width * 2
         state.height = width * 2
       },
     })
 
-    setTimeout(() => (canvasRef.current.style.opacity = "1"), 0)
+    const animationFrame = requestAnimationFrame(() => {
+      canvas.style.opacity = "1"
+    })
 
     return () => {
+      cancelAnimationFrame(animationFrame)
       globe.destroy()
       window.removeEventListener("resize", onResize)
     }
-  }, [rs, config])
+  }, [rs, config, resolvedTheme])
 
   return (
     <div
@@ -105,20 +137,22 @@ export function Globe({
       )}
     >
       <canvas
-        className={cn(
-          "size-full opacity-0 transition-opacity duration-500 [contain:layout_paint_size]"
-        )}
+        className="size-full opacity-0 transition-opacity duration-500 [contain:layout_paint_size]"
         ref={canvasRef}
         onPointerDown={(e) => {
-          pointerInteracting.current = e.clientX
           updatePointerInteraction(e.clientX)
         }}
+        onPointerMove={(e) => {
+          updateMovement(e.clientX)
+        }}
         onPointerUp={() => updatePointerInteraction(null)}
-        onPointerOut={() => updatePointerInteraction(null)}
-        onMouseMove={(e) => updateMovement(e.clientX)}
-        onTouchMove={(e) =>
-          e.touches[0] && updateMovement(e.touches[0].clientX)
-        }
+        onPointerCancel={() => updatePointerInteraction(null)}
+        onPointerLeave={() => updatePointerInteraction(null)}
+        onTouchMove={(e) => {
+          if (e.touches[0]) {
+            updateMovement(e.touches[0].clientX)
+          }
+        }}
       />
     </div>
   )

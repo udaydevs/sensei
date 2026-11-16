@@ -155,7 +155,6 @@ export default function Dashboard() {
                 </button>
                 <button
                   type="submit"
-                  disabled={!prompt.trim() || isStreaming}
                   className="mx-2 p-2 w-fit border rounded-[50%] text-white bg-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isStreaming ? (

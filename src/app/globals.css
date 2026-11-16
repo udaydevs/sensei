@@ -80,34 +80,38 @@ html, body {
 }
 
 :root {
+    --linen:#e1d5c6;
+    --dolphin:#655A7C;
+    --amethyst:#AB92BF;
     --default-font-family: "Noto Sans", sans-serif;
     --radius: 0.625rem;
-    --button: black;
+    --button: #AB92BF;
     --moz-text-decoration-color: black;
-    --background: #f0f2f3;
-    --foreground: oklch(0.13 0.028 261.692);
-    --card: oklch(1 0 0);
+    --background: #E1D5C6;
+    --foreground: #20202A;
+    --card: white;
     --card-foreground: oklch(0.13 0.028 261.692);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.13 0.028 261.692);
-    --primary: #b89bf2;
-    --primary-foreground: oklch(0.985 0.002 247.839);
+    --primary: #655A7C;
+    --primary-hover:#514565;
+    --primary-foreground: #655A7C;
     --secondary: oklch(0.967 0.003 264.542);
     --secondary-foreground: oklch(0.21 0.034 264.665);
-    --muted: oklch(0.967 0.003 264.542);
-    --muted-foreground: oklch(0.551 0.027 264.364);
-    --accent: oklch(0.967 0.003 264.542);
+    --muted: #655A7C; /*dolphin*/
+    --muted-foreground: #FDF1E2;/* nav button*/
+    --accent:  #AB92BF;
     --accent-foreground: oklch(0.21 0.034 264.665);
     --destructive: oklch(0.577 0.245 27.325);
-    --border: #d3cfcf;
-    --input: oklch(0.928 0.006 264.531);
-    --ring: oklch(0.707 0.022 261.325);
+    --border: #FDF1E2;
+    --input: #000000;  /* faq color */
+    --ring: #655A7C; /* card text color */
     --chart-1: oklch(0.646 0.222 41.116);
     --chart-2: oklch(0.6 0.118 184.704);
     --chart-3: oklch(0.398 0.07 227.392);
     --chart-4: oklch(0.828 0.189 84.429);
     --chart-5: oklch(0.769 0.188 70.08);
-    --sidebar: oklch(0.985 0.002 247.839);
+    --sidebar: #655A7C;
     --sidebar-foreground: oklch(0.13 0.028 261.692);
     --sidebar-primary: oklch(0.21 0.034 264.665);
     --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
@@ -118,30 +122,36 @@ html, body {
 }
 
 .dark {
-    --background: oklch(0.13 0.028 261.692);
-    --foreground: oklch(0.985 0.002 247.839);
-    --card: oklch(0.21 0.034 264.665);
+    --linen:#655A7C;
+    --dolphin:#FDF1E2;
+    --amethyst:#AB92BF;
+    --button:#FDF1E2;
+    --background: #292235;
+    --foreground: #F5EFE8;
+    --card: #AB92BF;
     --card-foreground: oklch(0.985 0.002 247.839);
     --popover: oklch(0.21 0.034 264.665);
     --popover-foreground: oklch(0.985 0.002 247.839);
-    --primary: oklch(0.928 0.006 264.531);
-    --primary-foreground: oklch(0.21 0.034 264.665);
+    --primary: #AB92BF;
+    --primary-hover:#BDA8CF;
+    --primary-foreground: #AB92BF;
     --secondary: oklch(0.278 0.033 256.848);
     --secondary-foreground: oklch(0.985 0.002 247.839);
-    --muted: oklch(0.278 0.033 256.848);
-    --muted-foreground: oklch(0.707 0.022 261.325);
-    --accent: oklch(0.278 0.033 256.848);
+    --surface: #352D45;
+    --muted: #f4f0ed; /*linen*/
+    --muted-foreground: #655A7C;/* nav button*/
+    --accent: #AB92BF; /*amethyst*/
     --accent-foreground: oklch(0.985 0.002 247.839);
     --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.551 0.027 264.364);
+    --border: #655A7C;
+    --input: #ffffff;
+    --ring: white;
     --chart-1: oklch(0.488 0.243 264.376);
     --chart-2: oklch(0.696 0.17 162.48);
     --chart-3: oklch(0.769 0.188 70.08);
     --chart-4: oklch(0.627 0.265 303.9);
     --chart-5: oklch(0.645 0.246 16.439);
-    --sidebar: oklch(0.21 0.034 264.665);
+    --sidebar: #FDF1E2;
     --sidebar-foreground: oklch(0.985 0.002 247.839);
     --sidebar-primary: oklch(0.488 0.243 264.376);
     --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
@@ -160,4 +170,22 @@ html, body {
         background: var(--background);
         color: var(--foreground);
     }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* pause when hovering */
+.marquee:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
 }

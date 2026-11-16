@@ -12,7 +12,7 @@ export function ThemeToggle() {
   if (!mounted) return null;
   return (
     <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="inline-flex items-center rounded-full gap-1 p-2 border border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-900  text-sm font-medium hover:bg-gray-800 hover:text-white dark:hover:bg-gray-100 dark:hover:text-gray-800 transition-all">
+      className="inline-flex items-center rounded-full gap-1 p-2 border-2 border-sidebar bg-#C8AD91 dark:bg-#4a3f5f  text-sm font-medium hover:bg-gray-800 hover:text-white dark:hover:bg-gray-100 dark:hover:text-gray-800 transition-all">
       {theme === "dark" ? (
         <Sun className="h-4 w-4 " />
       ) : (
