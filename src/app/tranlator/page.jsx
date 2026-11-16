@@ -118,8 +118,8 @@ export default function Dashboard() {
         <div className="w-full  sm:w-4/5 bg-white border py-2 rounded-2xl shadow-xl shadow-gray-200 h-auto mb-4">
           <form onSubmit={handleSubmit} className="h-full px-4 py-3">
             <input
+              type="text"
               placeholder="Ask anything..."
-              required
               className="w-full px-4 h-1/2 bg-white border-0 outline-none overflow-scroll overflow-y-auto p-2 rounded-xl "
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
@@ -127,7 +127,7 @@ export default function Dashboard() {
             <div className="flex justify-between py-2 my-2">
               <div>
                 <button
-                  type="submit"
+                  type="button"
                   className="mx-2 p-2 w-fit border rounded-4xl text-white "
                 >
                   <div className="flex">
